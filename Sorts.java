@@ -6,13 +6,21 @@ import java.util.PriorityQueue;
  */
 public class Sorts {
     public static void main(String[] args) {
-        int[] nums = {6, 2, 3, 12, 56, 8};
-//        bubbleSort(nums);
-        mergeSort(nums, 0, nums.length - 1);
+        int[] nums = {6, 2, 3, 12, 56, 6, 8};
+        heapSort(nums);
+//        quickSort(nums, 0, nums.length - 1);
         for (int num : nums) {
             System.out.print(num + "  ");
         }
 //        System.out.println(expSearch(nums, 3));
+
+        char[] arr = {'g', 'e', 'e', 'k', 's', 'f', 'o',
+                'r', 'g', 'e', 'e', 'k', 's'};
+        countSort(arr);
+        for (char c : arr) {
+            System.out.print(c + "  ");
+        }
+
     }
 
     /**
@@ -111,7 +119,7 @@ public class Sorts {
     }
 
     /**
-     * O(nlogn), stable, used for sorting linkedLists with no extra space; count inversions; external sort
+     * O(nlogn), worst O(nlogn), stable, used for sorting linkedLists with no extra space; count inversions; external sort
      * @param nums
      * @param left
      * @param right
@@ -155,4 +163,109 @@ public class Sorts {
             nums[k++] = R[j++];
         }
     }
+
+    /**
+     * O(nlogn), worst O(n^2), instable, used for sorting arrays
+     * array : quick sort  because merge sort need O(n) extra space
+     * linkedlist : merge sort because list don't need extra space and insert operation only need O(1) time, list can't
+     * do random access like array which quick sort needs
+     * @param nums
+     * @param low
+     * @param high
+     */
+    private static void quickSort(int[] nums, int low, int high) {
+        //attention: use if not while, for recursive has been done in if
+        //recursion and iterator only need one
+        if (low < high) {
+            int index = partition(nums, low, high);
+            quickSort(nums, low, index - 1);
+            quickSort(nums, index + 1, high);
+        }
+    }
+
+    private static int partition(int[] nums, int low, int high) {
+        int i = low, j = high;
+        int pivot = nums[i];
+
+        while (i < j) {
+            while (i < j && nums[j] >= pivot) {
+                j--;
+            }
+
+            if (i < j) {
+                nums[i++] = nums[j];
+            }
+
+            while (i < j && nums[i] < pivot) {
+                i++;
+            }
+
+            if (i < j) {
+                nums[j--] = nums[i];
+            }
+        }
+        nums[i] = pivot;
+
+        return i;
+    }
+
+    /**
+     * O(nlogn), used for sorted nearby sort array; K top numbers
+     * @param nums
+     */
+    private static void heapSort(int[] nums) {
+        buildHeap(nums);
+        for (int i=nums.length - 1; i >= 0; i--) {
+            int temp = nums[i];
+            nums[i] = nums[0];
+            nums[0] = temp;
+
+            adjustHeap(nums, 0, i - 1);
+        }
+    }
+
+    private static void buildHeap(int[] nums) {
+        for (int i=nums.length / 2; i>=0; i--) {
+            adjustHeap(nums, i, nums.length - 1);
+        }
+    }
+
+    private static void adjustHeap(int[] nums, int start, int end) {
+        int lChild = 2 * start + 1, rChild = 2 * start + 2, largeIndex = start;
+
+        if (lChild <= end && nums[lChild] > nums[largeIndex]) {
+            largeIndex = lChild;
+        }
+
+        if (rChild <= end && nums[rChild] > nums[largeIndex]) {
+            largeIndex = rChild;
+        }
+
+        if (largeIndex != start) {
+            int temp = nums[start];
+            nums[start] = nums[largeIndex];
+            nums[largeIndex] = temp;
+            adjustHeap(nums, largeIndex, end);
+        }
+    }
+
+    /**
+     * O(n), used for known and not large input range
+     * @param arr
+     */
+    private static void countSort(char[] arr) {
+        int[] cnt = new int[256];
+
+        for(char c : arr) {
+            cnt[c]++;
+        }
+
+        int index = 0;
+        for (int i = 0; i < 256; i++) {
+            while (cnt[i]-- > 0) {
+                arr[index++] = (char)i;
+            }
+        }
+    }
+
 }
