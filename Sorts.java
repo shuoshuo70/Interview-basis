@@ -1,26 +1,25 @@
-import java.util.Arrays;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by shuoshuo on 2017/9/28.
  */
 public class Sorts {
     public static void main(String[] args) {
-        int[] nums = {6, 2, 3, 12, 56, 6, 8};
-        heapSort(nums);
+        int[] nums = {6, 2, 3, 12, 56, 6, 8,6 ,6 ,6};
+//        shellSort(nums);
 //        quickSort(nums, 0, nums.length - 1);
+        bucketSort(nums, 3);
         for (int num : nums) {
             System.out.print(num + "  ");
         }
 //        System.out.println(expSearch(nums, 3));
 
-        char[] arr = {'g', 'e', 'e', 'k', 's', 'f', 'o',
-                'r', 'g', 'e', 'e', 'k', 's'};
-        countSort(arr);
-        for (char c : arr) {
-            System.out.print(c + "  ");
-        }
-
+//        char[] arr = {'g', 'e', 'e', 'k', 's', 'f', 'o',
+//                'r', 'g', 'e', 'e', 'k', 's'};
+//        countSort(arr);
+//        for (char c : arr) {
+//            System.out.print(c + "  ");
+//        }
     }
 
     /**
@@ -165,10 +164,11 @@ public class Sorts {
     }
 
     /**
-     * O(nlogn), worst O(n^2), instable, used for sorting arrays
+     * O(nlogn), worst O(n^2), unstable, used for sorting arrays
      * array : quick sort  because merge sort need O(n) extra space
      * linkedlist : merge sort because list don't need extra space and insert operation only need O(1) time, list can't
      * do random access like array which quick sort needs
+     * worst case : 1) already sorted 2) sorted in reverse order 3) all the same number
      * @param nums
      * @param low
      * @param high
@@ -210,7 +210,7 @@ public class Sorts {
     }
 
     /**
-     * O(nlogn), used for sorted nearby sort array; K top numbers
+     * O(nlogn), unstable, used for sorted nearby sort array; K top numbers
      * @param nums
      */
     private static void heapSort(int[] nums) {
@@ -250,7 +250,7 @@ public class Sorts {
     }
 
     /**
-     * O(n), used for known and not large input range
+     * O(n), stable, used for known and not large input range
      * @param arr
      */
     private static void countSort(char[] arr) {
@@ -268,4 +268,59 @@ public class Sorts {
         }
     }
 
+    /**
+     * O(n^s), unstable, allows exchange of far items, faster than insert sort
+     * @param nums
+     */
+    private static void shellSort(int[] nums) {
+        for (int h = nums.length / 2; h > 0; h /= 2) {
+            for (int i = h; i < nums.length; i++) {
+                int temp = nums[i], j = i - h;
+                for (; j >= 0; j -= h) {
+                    if (nums[j] > temp) {
+                        nums[j + h] = nums[j];
+                    } else {
+                        break;
+                    }
+                }
+                nums[j + h] = temp;
+            }
+        }
+    }
+
+    /**
+     * O(n), unstable, each bucket is a list, and use merge sort in each bucket
+     * @param nums
+     */
+    private static void bucketSort(int[] nums, int bucketCount) {
+        int low = nums[0], high = nums[0];
+
+        for (int num : nums) {
+            if (num < low) {
+                low = num;
+            } else if (num > high) {
+                high = num;
+            }
+        }
+
+        double interval = (double)(high - low + 1) / bucketCount;
+
+        List<Integer>[] buckets = new ArrayList[bucketCount];
+        for (int i = 0; i < bucketCount; i++) {
+            buckets[i] = new ArrayList<>();
+        }
+
+        for (int num : nums) {
+            buckets[(int)((num - low) / interval)].add(num);
+        }
+
+        int index = 0;
+        for (int i = 0; i < bucketCount; i++) {
+            Collections.sort(buckets[i]);
+
+            for (int j=0; j < buckets[i].size(); j++) {
+                nums[index++] = buckets[i].get(j);
+            }
+        }
+    }
 }
