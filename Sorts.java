@@ -323,4 +323,38 @@ public class Sorts {
             }
         }
     }
+
+    /**
+     * O(n), stable, range known, sort from low to high
+     * @param nums
+     */
+    private static void radixSort(int[] nums) {
+        int n = nums.length;
+        int[] count = new int[n];   //store length
+        int[][] buckets = new int[n][n]; //store value
+
+        //个位排序，n进制
+        for (int num : nums) {
+            buckets[num & n][count[num & n]++] = num;
+        }
+
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < count[i]; j++) {
+                nums[index++] = buckets[i][j];
+            }
+        }
+        Arrays.fill(count, 0);
+
+        //十位排序，n进制
+        for (int num : nums) {
+            buckets[num / n][count[num / n]++] = num;
+        }
+        index = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < count[i]; j++) {
+                nums[index++] = buckets[i][j];
+            }
+        }
+    }
 }
