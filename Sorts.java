@@ -335,7 +335,7 @@ public class Sorts {
 
         //个位排序，n进制
         for (int num : nums) {
-            buckets[num & n][count[num & n]++] = num;
+            buckets[num % n][count[num % n]++] = num;
         }
 
         int index = 0;
