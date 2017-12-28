@@ -30,17 +30,16 @@ public class ProducerAndConsumer1 {
 				synchronized(q) {
 					while(q.size() == queueSize) {
 						try {
-							System.out.println("¶ÓÁĞÒÑÂú£¬ÇëµÈ´ı¡£¡£¡£");
+							System.out.println("é˜Ÿåˆ—å·²æ»¡ï¼Œè¯·ç­‰å¾…ã€‚ã€‚ã€‚");
 							q.wait();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
-							q.notify();
 						}
 					}
 					
 					q.add(0);
 					q.notify();
-					System.out.println("¶ÓÁĞÖĞÉú²ú" + q.size() + "¸ö²úÆ·");
+					System.out.println("é˜Ÿåˆ—ä¸­ç”Ÿäº§" + q.size() + "ä¸ªäº§å“");
 				}
 			}
 		}
@@ -59,17 +58,16 @@ public class ProducerAndConsumer1 {
 				synchronized(q) {
 					if(q.size() == 0) {
 						try {
-							System.out.println("¶ÓÁĞÒÑ¿Õ£¬ ÇëµÈ´ı¡£¡£¡£");
+							System.out.println("é˜Ÿåˆ—å·²ç©ºï¼Œ è¯·ç­‰å¾…ã€‚ã€‚ã€‚");
 							q.wait();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
-							q.notify();
 						}
 					}
 					
 					q.poll();
 					q.notify();
-					System.out.println("Ïû·Ñ²úÆ·£¬Ê£Óà"+q.size()+"¸ö");
+					System.out.println("æ¶ˆè´¹äº§å“ï¼Œå‰©ä½™"+q.size()+"ä¸ª");
 				}
 			}
 		}
